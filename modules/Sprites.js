@@ -14,15 +14,24 @@ export default function animateSprite(name ,url,scene, sx, sy, sWidth, sHeight, 
     this.numberOfSpritesX = Math.ceil(this.image.width/this.sWidth)
     this.running = false
   
+    this.duration = this.numberOfSpritesX
     this.time = 0
     this.deltaTime =  1
     this.update = function (){
+      
+      
       if(this.running){
+        if(this.time==0){
+          console.log("Sprite Started Playing!")
+        }
         this.animate()
   
-        if(this.time ==  this.numberOfSpritesX){
+        if(this.time >=  this.numberOfSpritesX){
+          console.log("Sprite Ended Playing!",this.time)
           this.time = 0
           this.stop()
+          
+
         }else{
           this.time += this.deltaTime
         }
@@ -32,13 +41,24 @@ export default function animateSprite(name ,url,scene, sx, sy, sWidth, sHeight, 
       }
     }
   
-    
+    this.setTimeout = function(interval){
+      return new Promise(function(myResolve, myReject) {
+        console.log("Wait started!"); 
+        setTimeout(function() { 
+          myResolve("I love You !!"); 
+          console.log("Wait ended!", interval); 
+        }, interval);
+      });
+    }
   
     this.play = function(){
       if(!this.running){
         this.running = true
       }
+      return this.setTimeout(this.duration)
     }
+
+
   
     this.stop = function(){
       this.running = false

@@ -9,24 +9,46 @@ export default function GameObject(name, scene, x, y) {
     this.velocity = new Vector2(0,0)
     this.aceleration = new Vector2(0,0)
     this.position = new Vector2(x,y)
-    
-
+    this.time = 0;
+    this.deltaTime = 1;
+    this.geometry
     this.friction = 1
+
     
     this.update = function() {
       if(this.sprite){
         this.draw()
       }
-      
+      this.updateTime()
       this.move()
       this.updateAnimatedSprites()
     }
 
-    this.addSprite = function(url){
-      this.sprite = new Image()
-      this.sprite.src = url;
-      this.width = this.sprite.width;
-      this.height = this.sprite.height;
+
+    this.updateTime = function(){
+        this.time += this.deltaTime
+    }
+
+    this.updateGeometry = function (){
+      this.drawGeometry()
+    }
+
+    this.addGeometry = function(geometry){
+      this.geometry = geometry
+    }
+
+    this.drawGeometry = function(){
+      scene.ctx.beginPath();
+      this.geometry.map((point, index)=>{
+            if(index == 0){
+                scene.ctx.moveTo(point[0], point[1]);
+            }else{
+                scene.ctx.lineTo(point[0], point[1]);
+            }
+        })
+        scene.ctx.closePath();
+        scene.ctx.fillStyle = "#FFCC00";
+        scene.ctx.fill();
     }
 
     this.draw = function(){
@@ -46,15 +68,24 @@ export default function GameObject(name, scene, x, y) {
       this.height *= y
     }
 
+    this.addSprite = function(url){
+      this.sprite = new Image()
+      this.sprite.src = url;
+      this.width = this.sprite.width;
+      this.height = this.sprite.height;
+    }
+
     this.addAnimatedSprite = function (object){
       this.animatedSprites.push(object)
     }
 
     this.updateAnimatedSprites = function(){
-      this.animatedSprites.map((sprite)=>{
+      this.animatedSprites?.map((sprite)=>{
         sprite.dx = this.position.x + this.width/2 - sprite.dWidth/2
         sprite.dy = this.position.y + this.height/2 - sprite.dHeight/2
+        sprite.update()
       })
+      
     }
 
   }

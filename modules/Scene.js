@@ -23,12 +23,10 @@ export default function Scene(name, width, height){
     }
 
     this.getObject = function(name){
-      let objectFound
+      let objectFound = null
       Scene.gameObjects.map((object)=>{
         if(object.name == name){
-          objectFound = object.name
-        }else{
-          objectFound = null
+          objectFound = object
         }
       })
       return objectFound
@@ -39,14 +37,27 @@ export default function Scene(name, width, height){
       return object
     }
 
-    this.deleteObject = function(object){
-      Scene.gameObjects.pop(object)
+    this.deleteObject = function(gameObject){
+      this.gameObjects = this.gameObjects.filter((object)=>{
+        return object !== gameObject
+      })
     }
 
     this.updateTime = function(){
         Scene.time += Scene.deltaTime
     }
 
+    this.getCurrentTime = function(){
+      return Scene.time
+    }
+
+    this.setTimeout = function(interval){
+      return new Promise(function(myResolve, myReject) {
+        setTimeout(function() { 
+          myResolve("I love You !!"); 
+        }, interval);
+      });
+    }
     
 
     this.drawBackground = function(){
@@ -67,7 +78,15 @@ export default function Scene(name, width, height){
         Scene.drawBackground()
         Scene.updateGameObjects()
         Scene.updateTime()
+        Scene.debugText()
         window.requestAnimationFrame(Scene.update, 1000/Scene.fps)
+    }
+
+    this.debugText = function (){
+        Scene.ctx.font = "30px Arial";
+        Scene.ctx.fillStyle = "red";
+        Scene.ctx.textAlign = "center";
+        Scene.ctx.fillText(`Current scene Time: ${Scene.time}`, Scene.width*0.8, Scene.height*0.1);
     }
 
 

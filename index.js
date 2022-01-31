@@ -1,92 +1,43 @@
 import GameObject from "./modules/GameObject.js";
 import Scene from "./modules/Scene.js"
 import animateSprite from "./modules/Sprites.js"
-import { Line, Triangle } from "./modules/Geometry.js"
+import { Line, Polygon } from "./modules/Geometry.js"
 import { Vector2, toDegrees, toRadians } from "./modules/Math.js"
-
-function movePlayer({key}){
-  console.log(key)
-  let direction = new Vector2()
-  let speed = 2
-  direction.multiplyByScalar(speed)
-  switch (key){
-    case "w":
-      ball.velocity = direction.up()
-      break
-    case "s":
-      ball.velocity = direction.down()
-      break
-    case "d":
-      ball.velocity = direction.right()
-      break
-    case "a":
-      ball.velocity = direction.left()
-      break
-    case " ":
-      ball.animatedSprites[0].play()
-      shootBullets(scene)
-      break
-
-    case "Alt":
-      let bullet = scene.getObject("bullet")
-      scene.deleteObject(bullet)
-      break
-  }
-  
-}
+import { Text } from "./modules/Debug.js"
 
 
-function shootBullets(scene){
-  let animation = new animateSprite("animation","./Assets/BombExploding.png", scene, 0, 0,32, 64, 400, 200, 32, 64 )
 
-  let bullet = new GameObject("bullet",scene, 100, 100);
-  bullet.addSprite("./Assets/Player.png") // Idle
-  bullet.addAnimatedSprite(animation) // Animation
-  scene.addObject(bullet)
-  console.log(scene)
-}
 
-let origin = new Vector2(0,0)
-let myVector = new Vector2(500,200)
-let myVector2 = new Vector2(30,50)
+
 
 
 // Loading game assets
 let scene = new Scene("Main",document.documentElement.clientWidth,document.documentElement.clientHeight)
-
-
-let line = new Line("line",scene, origin, myVector)
-let line2 = new Line("line2",scene, origin, myVector2)
-let triangle = new Triangle("triangle",scene,[[450,300],[300,400],[700,500]])
-
-
-let spriteExploding = new animateSprite("bomb-exploding","./Assets/BombExploding.png", scene, 0, 0,32, 64, 400, 200, 32, 64 )
-
-let ball = new GameObject("ball",scene, 100, 100);
-ball.addSprite("./Assets/Player.png")
-ball.scale(0.1,0.1)
-ball.velocity.multiplyByScalar(10)
-ball.addAnimatedSprite(spriteExploding)
-
-
-
-
-
+let player = new GameObject("player", scene, 0, 0)
+let regularPolygon = new Polygon("regularPolygon", scene, 200, 200, 3)
+regularPolygon.scale(0.5)
 // Populating scene
-scene.addObject(line2)
-scene.addObject(line)
-scene.addObject(triangle)
-scene.addObject(ball)
-scene.addObject(spriteExploding)
-scene.addEvent("keydown",movePlayer)
+scene.addObject(regularPolygon)
+scene.addObject(player)
+scene.addObject(new Text(scene, 100,100 , "mouse", 12, "white", "mouseText"))
+
+scene.canvas.addEventListener("mousemove", (event)=>{
+  let mouseText = scene.getObject("mouseText")
+  mouseText.text = `x: ${event.clientX} y: ${event.clientX}`
+  mouseText.x = event.clientX
+  mouseText.y = event.clientY - 15
+
+  let regularPolygon = scene.getObject("regularPolygon")
+  regularPolygon.position = new Vector2(event.clientX, event.clientY) 
+  regularPolygon.rotate(regularPolygon.position.norm()/500)
+  regularPolygon.radius = regularPolygon.position.norm()/10
+})
 
 
 
 
 // Showing scene properties
 console.log("Current Scene: ",scene.name,scene)
-
-
 
 
 

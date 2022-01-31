@@ -1,3 +1,9 @@
+import { Vector2, toRadians } from "./Math.js";
+
+
+export function Point(x,y){
+    return new Vector2(x,y)
+}
 
 
 export function Line(name, scene, from, to){
@@ -17,49 +23,35 @@ export function Line(name, scene, from, to){
 
 }
 
-
-export function Triangle(name, scene, vector){
+export function Polygon(name, scene, x, y, vertices){
     this.name = name
+    this.position = new Vector2(x,y)
+    this.vertices = vertices
+    this.radius = 100
+    this.phase = 1
+
     this.update = function(){
         this.draw()
     }
 
-    this.draw = function(){
-        scene.ctx.beginPath();
-        vector.map((point, index)=>{
-            if(index == 0){
-                scene.ctx.moveTo(point[0], point[1]);
-            }else{
-                scene.ctx.lineTo(point[0], point[1]);
-            }
-        })
-        scene.ctx.closePath();
-        scene.ctx.fillStyle = "#FFCC00";
-        scene.ctx.fill();
+    this.scale = function (scalar){
+        this.radius *= scalar
     }
 
-}
-
-
-
-export function Polygon(name, scene, vector){
-    this.name = name
-    this.update = function(){
-        this.draw()
+    this.rotate = function(degree){
+        this.phase += toRadians(degree)
     }
 
     this.draw = function(){
-        scene.ctx.beginPath();
-        vector.map((point, index)=>{
-            if(index == 0){
-                scene.ctx.moveTo(point[0], point[1]);
-            }else{
-                scene.ctx.lineTo(point[0], point[1]);
-            }
-        })
-        scene.ctx.closePath();
         scene.ctx.fillStyle = "#FFCC00";
-        scene.ctx.fill();
+		let deltaAngle = 2*Math.PI/this.vertices;
+ 		scene.ctx.beginPath();
+		scene.ctx.moveTo (this.position.x +  this.radius*Math.cos(0 + this.phase), this.position.y +  this.radius*Math.sin(0 + this.phase));          
+ 		for (var i = 1; i <= this.vertices; i++) {
+			 scene.ctx.lineTo (this.position.x + this.radius*Math.cos(i * deltaAngle + this.phase), this.position.y + this.radius*Math.sin(i * deltaAngle + this.phase));
+		}
+ 		scene.ctx.stroke();
+        
     }
 
 }
