@@ -4,6 +4,8 @@ export default function GameObject(name, scene, x, y) {
     this.sprite
     this.name = name
     this.animatedSprites = []
+    this.geometry
+    this.colider
     this.width
     this.height
     this.speed = 1
@@ -12,7 +14,6 @@ export default function GameObject(name, scene, x, y) {
     this.position = new Vector2(x,y)
     this.time = 0;
     this.deltaTime = 1;
-    this.geometry
     this.friction = 1
 
     
@@ -22,13 +23,27 @@ export default function GameObject(name, scene, x, y) {
       }
       this.updateTime()
       this.move()
+      this.updateColider()
       this.updateGeometry()
+      
       this.updateAnimatedSprites()
     }
 
 
     this.updateTime = function(){
         this.time += this.deltaTime
+    }
+
+
+    this.updateColider = function(){
+      if(this.colider){
+        this.colider.update()
+        this.colider.position = this.position
+      }
+    }
+
+    this.addColider = function (colider){
+      this.colider = colider
     }
 
     this.updateGeometry = function (){

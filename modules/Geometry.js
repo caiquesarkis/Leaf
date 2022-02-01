@@ -1,53 +1,104 @@
-import { Vector2, toRadians } from "./Math.js";
+import { Vector2, toRadians, toDegrees } from "./Math.js";
 
 
-
-
-export class Polygon{
-    constructor(name, scene, x, y, vertices){
+export class Geometry{
+    constructor(name, scene, x, y){
         this.name = name
         this.position = new Vector2(x || 0,y || 0)
-        this.vertices = vertices
-        this.radius = 100
-        this.phase = - Math.PI/2
+        this.verticesCount = 0
+        this.vertices = []
         this.scene = scene
         this.width = 1
         this.height = 1
-        this.fill = "blue"
-        this.stroke
+        this.phase = 0
+        this.radius = 0
+        this.fill
+        this.anchor = new Vector2(x || 0, y || 0)
+        this.stroke = "white"
     }
+
 
     update(){
         this.draw()
     }
-
-    
 
     draw = function(){
         if(this.fill){
             this.scene.ctx.fillStyle = this.fill;
         }
         if(this.stroke){
-            this.scene.ctx.strokeStyle = this.stroke;
+            this.scene.ctx.strokeStyle = this.stroke; 
         }
         
-		let deltaAngle = 2*Math.PI/this.vertices;
- 		this.scene.ctx.beginPath();
-		this.scene.ctx.moveTo (this.position.x +  this.width*this.radius*Math.cos(0 + this.phase), this.position.y +  this.height*this.radius*Math.sin(0 + this.phase));          
- 		for (var i = 1; i <= this.vertices; i++) {
-			 this.scene.ctx.lineTo (this.position.x + this.width*this.radius*Math.cos(i * deltaAngle + this.phase), this.position.y + this.height*this.radius*Math.sin(i * deltaAngle + this.phase));
-		}
+        this.scene.ctx.beginPath();
+
+        this.vertices.map((vertex, index)=>{
+            if(index == 0){
+                this.scene.ctx.moveTo(this.position.x + vertex.x, this.position.y + vertex.y)
+            }else{
+                this.scene.ctx.lineTo(this.position.x + vertex.x, this.position.y + vertex.y)
+            }
+            
+        })
+
         this.scene.ctx.closePath();
+
+        
 
         if(this.fill){
             this.scene.ctx.fill()
         }
+
         if(this.stroke){
             this.scene.ctx.stroke();
         }
- 		
+
+        this.drawOrientationLine()
         
     }
+
+
+    drawOrientationLine(){
+        if(this.vertices.length != 0){
+            this.scene.ctx.strokeStyle = "gray";
+            this.scene.ctx.beginPath();
+            this.scene.ctx.moveTo(this.position.x, this.position.y)
+            this.scene.ctx.lineTo(this.position.x + this.vertices[0].x, this.position.y + this.vertices[0].y)
+            this.scene.ctx.closePath();
+            this.scene.ctx.stroke()
+        }
+    }
+
+    addVertices(vertices){
+        vertices.map((vertex)=>{
+            this.vertices.push(vertex)
+        })
+    }
+
+    scale(scalar){
+        this.width *= scalar
+        this.height *= scalar
+
+        this.vertices.map((vertex)=>{
+            vertex.x *= scalar
+            vertex.y *= scalar
+        })
+        
+    }
+
+    rotate(angle){
+        this.vertices.map((vertex, i)=>{
+            let norm = vertex.norm()
+            let phi = Math.atan2(vertex.y,vertex.x)
+
+
+
+
+            vertex.x = norm* Math.cos(phi+angle)
+            vertex.y = norm* Math.sin(phi+angle)
+        })
+    }
+
 
     strokeWith(color){
         this.stroke = color
@@ -56,6 +107,30 @@ export class Polygon{
     fillWith(color){
         this.fill = color
     }
+
+
+}
+
+export class Polygon extends Geometry{
+    constructor(name, scene, x, y, verticesCount){
+        super(name, scene, x, y)
+        this.verticesCount = verticesCount
+        this.radius = 100
+        this.vertices = []
+        this.deltaAngle = 2*Math.PI/verticesCount
+
+        for (var i = 1; i <= this.verticesCount; i++) {
+            this.vertices.push(new Vector2(this.width*this.radius*Math.cos(i * this.deltaAngle + this.phase),this.height*this.radius*Math.sin(i * this.deltaAngle + this.phase)))
+       }
+    }
+
+    updateGeometry(){
+        this.vertices = []
+        for (var i = 1; i <= this.verticesCount; i++) {
+            this.vertices.push(new Vector2(this.width*this.radius*Math.cos(i * this.deltaAngle + this.phase),this.height*this.radius*Math.sin(i * this.deltaAngle + this.phase)))
+       }
+    }
+    
     scale(scalar){
         this.radius *= scalar
     }
@@ -63,42 +138,12 @@ export class Polygon{
     rotate(degree){
         this.phase += toRadians(degree)
     }
-    
-
-    
-
 }
 
 
-export class Line extends Polygon{
-    constructor(name, scene, start, end){
-        super(name, scene, 2)
-        this.start = start
-        this.end = end
-    }
-    draw = function(){
-        this.scene.ctx.strokeStyle = this.stroke;
- 		this.scene.ctx.beginPath();
-		this.scene.ctx.moveTo(this.start.x, this.start.y);          
- 		this.scene.ctx.lineTo(this.end.x,this.end.y)
-        this.scene.ctx.closePath();
-    	this.scene.ctx.stroke();
-    }
-}
-
-export class Triangle extends Polygon{
-    constructor(name, scene, x, y){
-        super(name, scene, x, y, 3)
-    }
-}
 
 
-export class Box extends Polygon{
-    constructor(name, scene, x, y, width, height){
-        super(name, scene, x, y, 4)
-        this.phase = - Math.PI/4
-        this.width = width || 50
-        this.height = height || 50
-        this.radius = 1
-    }
-}
+
+
+
+

@@ -4,6 +4,9 @@ export default function Scene(name, width, height){
     this.dom.getElementById("canvas-container").innerHTML =`<canvas id="canvas" width=${width} height=${height}></canvas>`
     this.canvas = document.getElementById("canvas")
     this.ctx = this.canvas.getContext("2d")
+    this.ctx.translate(width/2, height/2);
+    this.ctx.scale(1, -1)
+
     this.backgroundColor = "#171717";
     this.fps = 60
     this.gameObjects = []
@@ -12,6 +15,7 @@ export default function Scene(name, width, height){
     this.width = width;
     this.height = height;
     this.debugMode = false
+    
     let Scene = this
     
     this.update = function (){
@@ -24,6 +28,11 @@ export default function Scene(name, width, height){
       }
       
       window.requestAnimationFrame(Scene.update, 1000/Scene.fps)
+  }
+
+  this.setCanvasDimension = function(width, height){
+    this.width = width
+    this.height = height
   }
 
     this.addEvent = function(event, callBackFunction){
@@ -75,7 +84,7 @@ export default function Scene(name, width, height){
     this.drawBackground = function(){
         Scene.ctx.beginPath();
         Scene.ctx.fillStyle = this.backgroundColor;
-        Scene.ctx.fillRect(0, 0, Scene.width, Scene.height);
+        Scene.ctx.fillRect(-Scene.width/2, -Scene.height/2, Scene.width, Scene.height);
         Scene.ctx.fill();
     }
 
