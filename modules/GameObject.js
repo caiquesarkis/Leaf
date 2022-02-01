@@ -6,6 +6,7 @@ export default function GameObject(name, scene, x, y) {
     this.animatedSprites = []
     this.width
     this.height
+    this.speed = 1
     this.velocity = new Vector2(0,0)
     this.aceleration = new Vector2(0,0)
     this.position = new Vector2(x,y)
@@ -21,6 +22,7 @@ export default function GameObject(name, scene, x, y) {
       }
       this.updateTime()
       this.move()
+      this.updateGeometry()
       this.updateAnimatedSprites()
     }
 
@@ -30,25 +32,15 @@ export default function GameObject(name, scene, x, y) {
     }
 
     this.updateGeometry = function (){
-      this.drawGeometry()
+      if(this.geometry){
+        this.geometry.update()
+        this.geometry.position = this.position
+      }
+      
     }
 
     this.addGeometry = function(geometry){
       this.geometry = geometry
-    }
-
-    this.drawGeometry = function(){
-      scene.ctx.beginPath();
-      this.geometry.map((point, index)=>{
-            if(index == 0){
-                scene.ctx.moveTo(point[0], point[1]);
-            }else{
-                scene.ctx.lineTo(point[0], point[1]);
-            }
-        })
-        scene.ctx.closePath();
-        scene.ctx.fillStyle = "#FFCC00";
-        scene.ctx.fill();
     }
 
     this.draw = function(){
@@ -63,9 +55,14 @@ export default function GameObject(name, scene, x, y) {
 
     }
 
-    this.scale = function(x,y){
-      this.width *= x
-      this.height *= y
+    this.scale = function(scalar){
+      this.width *= scalar
+      this.height *= scalar
+      if(this.geometry){
+        this.geometry.width *= scalar
+        this.geometry.height *= scalar
+      }
+      
     }
 
     this.addSprite = function(url){

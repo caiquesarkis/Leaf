@@ -1,37 +1,55 @@
-export function Vector2(x,y){
-    this.x = x || 0
-    this.y = y || 0
+export class Vector2{
+    constructor(x,y){
+        this.x = x || 0
+        this.y = y || 0
+    }
+    
 
-    this.multiplyByScalar = function(scalar){
-        this.x *= scalar || 1
-        this.y *= scalar || 1
+    multiplyByScalar(_scalar){
+        return new Vector2(this.x*_scalar, this.y*_scalar)
     }
 
-    this.dot = function (Vector2){
-        return this.x*Vector2.x + this.y*Vector2.y
+    clone(){
+        return new Vector2(this.x, this.y)
     }
 
-    this.norm = function(){
+    normalize(){
+        return new Vector2(this.x/this.norm(), this.y/this.norm())
+    }
+
+    inverse(){
+        return new Vector2(-1*this.x, -1*this.y)
+    }
+
+    add(_Vector2){
+        return new Vector2(_Vector2.x + this.x,_Vector2.y + this.y)
+    }
+
+    dot(_Vector2){
+        return this.x*_Vector2.x + this.y*_Vector2.y
+    }
+
+    norm(){
         return Math.sqrt(this.x**2 + this.y**2)
     }
 
-    this.angle = function(direction){
+    angle(direction){
         return Math.acos(this.dot(direction)/(this.norm()))
     }
 
-    this.up = function(){
+    up(){
         return new Vector2(0,-1)
     }
 
-    this.down = function(){
+    down(){
         return new Vector2(0,1)
     }
 
-    this.left = function(){
+    left(){
         return new Vector2(-1,0)
     }
 
-    this.right = function(){
+    right(){
         return new Vector2(1,0)
     }
 }
@@ -46,5 +64,7 @@ export function toRadians(degrees){
     return Math.PI * degrees / 180
 }
 
-
+export function useVector(){
+    return new Vector2()
+}
 

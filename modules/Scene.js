@@ -11,16 +11,28 @@ export default function Scene(name, width, height){
     this.deltaTime = 1;
     this.width = width;
     this.height = height;
+    this.debugMode = false
     let Scene = this
     
-
-    this.addEvent = function(event, callBackFunction){
-      switch (event){
-        case "keydown":
-          this.dom.addEventListener(event, callBackFunction, false);
+    this.update = function (){
+      Scene.ctx.clearRect(0, 0, Scene.width, Scene.height);
+      Scene.drawBackground()
+      Scene.updateGameObjects()
+      Scene.updateTime()
+      if(Scene.debugMode){
+        Scene.debugText()
       }
       
+      window.requestAnimationFrame(Scene.update, 1000/Scene.fps)
+  }
+
+    this.addEvent = function(event, callBackFunction){
+          this.dom.addEventListener(event, callBackFunction, false);      
     }
+
+    this.removeEvent = function(event, callBackFunction){
+      this.dom.removeEventListener(event, callBackFunction, false);      
+}
 
     this.getObject = function(name){
       let objectFound = null
@@ -73,14 +85,6 @@ export default function Scene(name, width, height){
       })
     }
 
-    this.update = function (){
-        Scene.ctx.clearRect(0, 0, Scene.width, Scene.height);
-        Scene.drawBackground()
-        Scene.updateGameObjects()
-        Scene.updateTime()
-        Scene.debugText()
-        window.requestAnimationFrame(Scene.update, 1000/Scene.fps)
-    }
 
     this.debugText = function (){
         Scene.ctx.font = "30px Arial";
@@ -88,6 +92,7 @@ export default function Scene(name, width, height){
         Scene.ctx.textAlign = "center";
         Scene.ctx.fillText(`Current scene Time: ${Scene.time}`, Scene.width*0.8, Scene.height*0.1);
     }
+
 
 
     window.requestAnimationFrame(Scene.update,1000/this.fps);
