@@ -13,6 +13,10 @@ export class Vector2{
         return new Vector2(this.x, this.y)
     }
 
+    distanceTo(_Vector2){
+        return _Vector2.add(this.inverse()).norm()
+    }
+
     normalize(){
         return new Vector2(this.x/this.norm(), this.y/this.norm())
     }
@@ -38,11 +42,11 @@ export class Vector2{
     }
 
     up(){
-        return new Vector2(0,-1)
+        return new Vector2(0,1)
     }
 
     down(){
-        return new Vector2(0,1)
+        return new Vector2(0,-1)
     }
 
     left(){

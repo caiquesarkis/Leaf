@@ -15,6 +15,7 @@ export default function GameObject(name, scene, x, y) {
     this.time = 0;
     this.deltaTime = 1;
     this.friction = 1
+    this.isStatic = false
 
     
     this.update = function() {
@@ -38,7 +39,10 @@ export default function GameObject(name, scene, x, y) {
     this.updateColider = function(){
       if(this.colider){
         this.colider.update()
-        this.colider.position = this.position
+        if(!this.isStatic){
+          this.colider.position = this.position
+        }
+        
       }
     }
 
@@ -63,11 +67,12 @@ export default function GameObject(name, scene, x, y) {
     }
 
     this.move = function (){
-      this.position.x += this.velocity.x*scene.deltaTime;
-      this.position.y += this.velocity.y*scene.deltaTime;
-      this.velocity.x = this.velocity.x*this.friction + this.aceleration.x*scene.deltaTime;
-      this.velocity.y = this.velocity.y*this.friction + this.aceleration.y*scene.deltaTime;
-
+      if(!this.isStatic){
+        this.position.x += this.velocity.x*scene.deltaTime;
+        this.position.y += this.velocity.y*scene.deltaTime;
+        this.velocity.x = this.velocity.x*this.friction + this.aceleration.x*scene.deltaTime;
+        this.velocity.y = this.velocity.y*this.friction + this.aceleration.y*scene.deltaTime;
+      }
     }
 
     this.scale = function(scalar){

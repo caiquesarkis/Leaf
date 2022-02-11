@@ -11,7 +11,7 @@ export class Geometry{
         this.width = 1
         this.height = 1
         this.phase = 0
-        this.radius = 0
+        this.radius = 10
         this.fill
         this.anchor = new Vector2(x || 0, y || 0)
         this.stroke = "white"
@@ -23,13 +23,6 @@ export class Geometry{
     }
 
     draw = function(){
-        if(this.fill){
-            this.scene.ctx.fillStyle = this.fill;
-        }
-        if(this.stroke){
-            this.scene.ctx.strokeStyle = this.stroke; 
-        }
-        
         this.scene.ctx.beginPath();
 
         this.vertices.map((vertex, index)=>{
@@ -46,11 +39,13 @@ export class Geometry{
         
 
         if(this.fill){
+            this.scene.ctx.fillStyle = this.fill;
             this.scene.ctx.fill()
         }
 
         if(this.stroke){
             this.scene.ctx.stroke();
+            this.scene.ctx.strokeStyle = this.stroke; 
         }
 
         this.drawOrientationLine()
@@ -124,6 +119,11 @@ export class Polygon extends Geometry{
        }
     }
 
+    update(){
+        this.draw()
+        this.updateGeometry()
+    }
+
     updateGeometry(){
         this.vertices = []
         for (var i = 1; i <= this.verticesCount; i++) {
@@ -144,6 +144,28 @@ export class Polygon extends Geometry{
 
 
 
+export class Circle extends Geometry{
+    constructor(name, scene, x, y, radius){
+        super(name, scene, x, y)
+        this.radius = radius
+    }
 
+    draw = function(){
+        this.scene.ctx.beginPath();
+        this.scene.ctx.arc(this.position.x,this.position.y,this.radius,0,2*Math.PI);
+        this.scene.ctx.closePath();
+        this.scene.ctx.stroke();
 
+        
 
+        if(this.fill){
+            this.scene.ctx.fillStyle = this.fill;
+            this.scene.ctx.fill()
+        }
+
+        if(this.stroke){
+            this.scene.ctx.stroke();
+            this.scene.ctx.strokeStyle = this.stroke; 
+        }
+    }
+}
