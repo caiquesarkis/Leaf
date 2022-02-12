@@ -1,24 +1,27 @@
 import { Vector2 } from "./Math.js";
 
-export default function GameObject(name, scene, x, y) {
-    this.sprite
-    this.name = name
-    this.animatedSprites = []
-    this.geometry
-    this.colider
-    this.width
-    this.height
-    this.speed = 1
-    this.velocity = new Vector2(0,0)
-    this.aceleration = new Vector2(0,0)
-    this.position = new Vector2(x,y)
-    this.time = 0;
-    this.deltaTime = 1;
-    this.friction = 1
-    this.isStatic = false
+export default class GameObject{
+    constructor(name, scene, x, y){
+      this.scene = scene
+      this.sprite
+      this.name = name
+      this.animatedSprites = []
+      this.geometry
+      this.colider
+      this.width
+      this.height
+      this.speed = 1
+      this.velocity = new Vector2(0,0)
+      this.aceleration = new Vector2(0,0)
+      this.position = new Vector2(x,y)
+      this.time = 0;
+      this.deltaTime = 1;
+      this.friction = 1
+      this.isStatic = false
+    }
 
     
-    this.update = function() {
+    update() {
       if(this.sprite){
         this.draw()
       }
@@ -31,12 +34,12 @@ export default function GameObject(name, scene, x, y) {
     }
 
 
-    this.updateTime = function(){
+    updateTime(){
         this.time += this.deltaTime
     }
 
 
-    this.updateColider = function(){
+    updateColider(){
       if(this.colider){
         this.colider.update()
         if(!this.isStatic){
@@ -46,11 +49,11 @@ export default function GameObject(name, scene, x, y) {
       }
     }
 
-    this.addColider = function (colider){
+    addColider(colider){
       this.colider = colider
     }
 
-    this.updateGeometry = function (){
+    updateGeometry(){
       if(this.geometry){
         this.geometry.update()
         this.geometry.position = this.position
@@ -58,24 +61,24 @@ export default function GameObject(name, scene, x, y) {
       
     }
 
-    this.addGeometry = function(geometry){
+    addGeometry(geometry){
       this.geometry = geometry
     }
 
-    this.draw = function(){
+    draw(){
       scene.ctx.drawImage( this.sprite, this.position.x, this.position.y, this.width, this.height);
     }
 
-    this.move = function (){
+    move(){
       if(!this.isStatic){
-        this.position.x += this.velocity.x*scene.deltaTime;
-        this.position.y += this.velocity.y*scene.deltaTime;
-        this.velocity.x = this.velocity.x*this.friction + this.aceleration.x*scene.deltaTime;
-        this.velocity.y = this.velocity.y*this.friction + this.aceleration.y*scene.deltaTime;
+        this.position.x += this.velocity.x*this.scene.deltaTime;
+        this.position.y += this.velocity.y*this.scene.deltaTime;
+        this.velocity.x = this.velocity.x*this.friction + this.aceleration.x*this.scene.deltaTime;
+        this.velocity.y = this.velocity.y*this.friction + this.aceleration.y*this.scene.deltaTime;
       }
     }
 
-    this.scale = function(scalar){
+    scale(scalar){
       this.width *= scalar
       this.height *= scalar
       if(this.geometry){
@@ -85,18 +88,18 @@ export default function GameObject(name, scene, x, y) {
       
     }
 
-    this.addSprite = function(url){
+    addSprite(url){
       this.sprite = new Image()
       this.sprite.src = url;
       this.width = this.sprite.width;
       this.height = this.sprite.height;
     }
 
-    this.addAnimatedSprite = function (object){
+    addAnimatedSprite(object){
       this.animatedSprites.push(object)
     }
 
-    this.updateAnimatedSprites = function(){
+    updateAnimatedSprites(){
       this.animatedSprites?.map((sprite)=>{
         sprite.dx = this.position.x + this.width/2 - sprite.dWidth/2
         sprite.dy = this.position.y + this.height/2 - sprite.dHeight/2

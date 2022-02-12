@@ -15,44 +15,43 @@ import { Colider2d } from "./modules/Collisions.js";
 let scene = new Scene('colision-detection', document.documentElement.clientWidth, document.documentElement.clientHeight)
 scene.debugMode = false
 
-let entity = new GameObject('entity', scene, 0, 0)
-entity.velocity = new Vector2(Math.random() - 0.5, Math.random()- 0.5)
-let entityGeometry = new Circle('entityGeometry', scene,entity.position.x, entity.position.y, 10)
-entity.addGeometry(entityGeometry)
-scene.addObject(entity)
 
-
-
-console.log(entity.prototype)
-
-
-
-
-function applyBoundaryCondidtionsTo(gameObject){
-    if(gameObject.geometry){
-        if(gameObject.position.x + gameObject.geometry.radius > gameObject.canvas.width){
-        gameObject.position.x = gameObject.canvas.width - gameObject.geometry.radius
-        gameObject.velocity.x *= -1 
-        }
-        if(gameObject.position.x - gameObject.geometry.radius < 0){
-            gameObject.position.x = gameObject.geometry.radius
-            gameObject.velocity.x *= -1 
-        }
-
-        if(gameObject.position.y + gameObject.geometry.radius> gameObject.canvas.height){
-            gameObject.position.y = gameObject.canvas.height - gameObject.geometry.radius
-            gameObject.velocity.y *= -1 
-        }
-        if(gameObject.position.y - gameObject.geometry.radius < 0){
-            gameObject.position.y = gameObject.geometry.radius
-            gameObject.velocity.y *= -1 
-        }
-      }
+class Entity extends GameObject{
+    constructor(name, scene, x, y){
+        super(name, scene, x, y)
+    }
+    move(){
+        super.move()
+        if(this.geometry){
+            if(this.position.x + this.geometry.radius > this.scene.width/2){
+                this.position.x = this.scene.width/2 - this.geometry.radius
+                this.velocity.x *= -1 
+            }
+            if(this.position.x - this.geometry.radius < - this.scene.width/2){
+                this.position.x = this.geometry.radius - this.scene.width/2
+                this.velocity.x *= -1 
+            }
+    
+            if(this.position.y + this.geometry.radius > this.scene.height/2){
+                this.position.y = this.scene.height/2 - this.geometry.radius
+                this.velocity.y *= -1 
+            }
+            if(this.position.y - this.geometry.radius < -this.scene.height/2){
+                this.position.y = this.geometry.radius - this.scene.height/2
+                this.velocity.y *= -1 
+            }
+          }
+    }
 }
 
 
-
-
-
+for(let i=0; i<20; i++){
+    let entity = new Entity(`entity-${i}`, scene, 0, 0)
+    entity.velocity = new Vector2(Math.random() - 0.5, Math.random()- 0.5).multiplyByScalar(10)
+    entity.aceleration.y = -0.1
+    let entityGeometry = new Circle(`entityGeometry-${i}`, scene,entity.position.x, entity.position.y, 10)
+    entity.addGeometry(entityGeometry)
+    scene.addObject(entity)
+}
 
 console.log("Scene",scene)
