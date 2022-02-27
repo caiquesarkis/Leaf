@@ -22,7 +22,7 @@ export default function Scene(name, width, height){
       Scene.ctx.clearRect(0, 0, Scene.width, Scene.height);
       Scene.drawBackground()
       Scene.updateGameObjects()
-      // Scene.handleColision()
+      Scene.updatePhysicsLayer()
       Scene.updateTime()
       if(Scene.debugMode){
         Scene.debugText()
@@ -33,56 +33,15 @@ export default function Scene(name, width, height){
 
 
 
-
-
-    this.handleColision = function(){
-      // Checking colisions
-      for(let i = 0; i<Scene.gameObjects.length; i++){
-        for(let j = 0; j<Scene.gameObjects.length; j++){
-          if(i!=j){
-
-            let gameObject1 = Scene.gameObjects[i].position
-            let gameObject2 = Scene.gameObjects[j].position
-            if(gameObject1 && gameObject2){
-              if((i != j) && (j > i)){
-                let distance = gameObject1.distanceTo(gameObject2)
-                let radiusSum = Scene.gameObjects[i].colider.radius + Scene.gameObjects[j].colider.radius
-                console.log(distance - radiusSum)
-                if( distance < radiusSum){
-                  // Resolving colision
-                  let midPointX = (gameObject1.x + gameObject2.x)/2
-                  let midPointY = (gameObject1.y + gameObject2.y)/2
-                  let distanceBetweenCircles = Math.sqrt((gameObject1.x - gameObject2.x)**2 + (gameObject1.y - gameObject2.y)**2)
-
-                  gameObject1.x = midPointX + Scene.gameObjects[i].colider.radius * (gameObject1.x - gameObject2.x) / distanceBetweenCircles; 
-                  gameObject1.y = midPointY + Scene.gameObjects[i].colider.radius * (gameObject1.y - gameObject2.y) / distanceBetweenCircles; 
-                  
-                
-
-                  gameObject2.x = midPointX + Scene.gameObjects[j].colider.radius * (gameObject2.x - gameObject1.x) / distanceBetweenCircles; 
-                  gameObject2.y = midPointY + Scene.gameObjects[j].colider.radius * (gameObject2.y - gameObject1.y) / distanceBetweenCircles;
-                  
-
-                  if(this.debugMode){
-                    Scene.gameObjects[i].colider.strokeWith("red")
-                    Scene.gameObjects[i].colider.strokeWith("red")
-                  }
-                  
-                }else{
-                  if(this.debugMode){
-                    Scene.gameObjects[j].colider.strokeWith()
-                    Scene.gameObjects[j].colider.strokeWith()
-                  }
-                }
-              }
-          }
-
-          } 
-        }
-      }
-    }
-
-
+  this.updatePhysicsLayer = function(){
+      this.gameObjects.map((object, i)=>{
+        this.gameObjects.map((otherObject, j)=>{
+            if(i!=j && j>i){
+                console.log("Distance:", object.position.distanceTo(otherObject.position))
+            }
+        })  
+      })
+  } 
 
 
   this.setCanvasDimension = function(width, height){

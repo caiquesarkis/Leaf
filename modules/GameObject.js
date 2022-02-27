@@ -7,7 +7,6 @@ export default class GameObject{
       this.name = name
       this.animatedSprites = []
       this.geometry
-      this.colider
       this.width
       this.height
       this.speed = 1
@@ -27,7 +26,6 @@ export default class GameObject{
       }
       this.updateTime()
       this.move()
-      this.updateColider()
       this.updateGeometry()
       
       this.updateAnimatedSprites()
@@ -38,21 +36,6 @@ export default class GameObject{
         this.time += this.deltaTime
     }
 
-
-    updateColider(){
-      if(this.colider){
-        this.colider.update()
-        if(!this.isStatic){
-          this.colider.position = this.position
-        }
-        
-      }
-    }
-
-    addColider(colider){
-      this.colider = colider
-    }
-
     updateGeometry(){
       if(this.geometry){
         this.geometry.update()
@@ -60,6 +43,7 @@ export default class GameObject{
       }
       
     }
+
 
     addGeometry(geometry){
       this.geometry = geometry

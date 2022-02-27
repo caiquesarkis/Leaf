@@ -7,6 +7,7 @@ export class Geometry{
         this.position = new Vector2(x || 0,y || 0)
         this.verticesCount = 0
         this.vertices = []
+        this.physicsLayer = null
         this.scene = scene
         this.width = 1
         this.height = 1
@@ -104,6 +105,9 @@ export class Geometry{
     }
 
 
+    setPhysicsLayer(layer){
+        this.physicsLayer = layer
+    }
 }
 
 export class Polygon extends Geometry{
